@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇩🇪 Quiz Wortschatz & Grammatik B1-B2 + C-Test</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .correct-bg {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+            font-weight: 700;
+        }
+        .incorrect-bg {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .option-label {
+            transition: all 0.2s ease-in-out;
+        }
+        .ctest-input {
+            border-bottom: 2px solid #94a3b8;
+            outline: none;
+            transition: all 0.2s ease;
+            font-weight: 700;
+        }
+        .ctest-input:focus {
+            border-bottom-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .ctest-input.correct {
+            border-bottom-color: #10b981;
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .ctest-input.incorrect {
+            border-bottom-color: #ef4444;
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen pb-16">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md border-b border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🇩🇪</span>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl leading-tight">Deutsch B1–B2 Portal</h1>
+                    <p class="text-xs text-slate-400">Wortschatz, Grammatik & C-Test</p>
+                </div>
+            </div>
+            
+            <!-- Direct Download & Export Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="downloadQuestionsTxt()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs md:text-sm font-semibold rounded-xl flex items-center space-x-2 shadow-sm transition">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Download Soal & Kunci (TXT)</span>
+                </button>
+                <button onclick="window.print()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs md:text-sm font-medium rounded-xl flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-print text-blue-400"></i>
+                    <span>Cetak / PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero & Progress Section -->
+    <div class="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-900 text-white py-8 px-4 mb-8 shadow-inner">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3">
+                Level B1–B1+ → B2
+            </span>
+            <h2 class="text-2xl md:text-4xl font-extrabold mb-2">Quiz Wortschatz, Grammatik & C-Test</h2>
+            <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
+                Pilih jawaban pada quiz untuk melihat **umpan balik warna instan (Hijau/Merah)** beserta **pembahasan Bahasa Indonesia**, lalu lanjutkan ke C-Test!
+            </p>
+
+            <!-- Navigation Steps & Score Indicators -->
+            <div class="flex flex-wrap justify-center items-center gap-3 md:gap-4 mt-6 text-xs md:text-sm">
+                <a href="#quiz-section" id="nav-quiz-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-600 text-white font-semibold shadow-md">
+                    <span class="w-6 h-6 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold text-xs">1</span>
+                    <span>Quiz (20 Soal)</span>
+                    <span id="header-quiz-score" class="ml-1 px-2 py-0.5 bg-blue-800 rounded-full text-xs">0/20</span>
+                </a>
+                <i class="fa-solid fa-chevron-right text-slate-500 text-xs hidden sm:inline"></i>
+                <a href="#ctest-section" id="nav-ctest-btn" class="flex items-center space-x-2 px-4 py-2 rounded-full bg-slate-800 text-slate-300 font-semibold border border-slate-700 hover:bg-slate-700 transition">
+                    <span class="w-6 h-6 rounded-full bg-slate-700 text-slate-300 flex items-center justify-center font-bold text-xs">2</span>
+                    <span>C-Test (Umweltprojekt)</span>
+                    <span id="header-ctest-score" class="ml-1 px-2 py-0.5 bg-slate-900 rounded-full text-xs">0/18</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 space-y-12">
+
+        <!-- SECTION 1: QUIZ WORTSCHATZ & GRAMMATIK -->
+        <section id="quiz-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 md:p-8 bg-slate-50/80 border-b border-slate-200 flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span>🇩🇪</span> Quiz Wortschatz & Grammatik
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">20 Soal Pilihan Ganda (Klik opsi untuk pembahasan langsung)</p>
+                </div>
+                <div id="quiz-score-badge" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-sm flex items-center space-x-2 shadow">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span id="quiz-score-text">Skor Quiz: 0 / 20</span>
+                </div>
+            </div>
+
+            <form id="quiz-form" onsubmit="event.preventDefault();" class="p-6 md:p-8 space-y-8">
+                <!-- Questions container populated dynamically by JS -->
+                <div id="questions-container" class="space-y-8"></div>
+
+                <!-- Quiz Action Bar -->
+                <div class="pt-6 border-t border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                    <button type="button" onclick="checkAllQuizAnswers()" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-list-check text-emerald-400"></i>
+                        <span>Cek Semua Jawaban Belum Terjawab</span>
+                    </button>
+                    
+                    <a href="#ctest-section" id="go-to-ctest-btn" class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition flex items-center justify-center space-x-2">
+                        <span>Lanjut ke C-Test (Bagian 2)</span>
+                        <i class="fa-solid fa-arrow-down"></i>
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <!-- SECTION 2: C-TEST -->
+        <section id="ctest-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 md:p-8 bg-slate-50/80 border-b border-slate-200 flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">
+                        Bagian Kedua
+                    </span>
+                    <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 mt-2">
+                        <span>🇩🇪</span> C-Test – Thema: Umweltprojekt
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">Lengkapi potongan kata yang hilang dalam teks berikut.</p>
+                </div>
+                <div id="ctest-score-badge" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-sm flex items-center space-x-2 shadow">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span id="ctest-score-text">Skor C-Test: 0 / 18</span>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-8">
+                <!-- C-Test Passage Box -->
+                <div class="p-6 md:p-8 bg-slate-50 rounded-2xl border border-slate-200 leading-relaxed text-slate-800 text-base md:text-lg font-normal shadow-inner space-y-4">
+                    <p id="ctest-paragraph" class="text-justify leading-loose">
+                        <!-- Populated by JS -->
+                    </p>
+                </div>
+
+                <!-- C-Test Actions -->
+                <div class="flex flex-wrap justify-between items-center gap-4 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="checkCTestAnswers()" class="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Periksa Jawaban C-Test</span>
+                    </button>
+                    
+                    <button type="button" onclick="downloadQuestionsTxt()" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download Soal & Kunci (TXT)</span>
+                    </button>
+                </div>
+
+                <!-- C-Test Explanations Section (Appears after submission) -->
+                <div id="ctest-explanations" class="hidden space-y-6 pt-6 border-t border-slate-200">
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5">
+                        <h4 class="font-bold text-indigo-900 text-lg flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-book-open text-indigo-600"></i>
+                            <span>Penjelasan Lengkap C-Test (Bahasa Indonesia)</span>
+                        </h4>
+                        <p class="text-sm text-indigo-700">
+                            Berikut adalah analisis tata bahasa (grammatik) dan arti kata untuk setiap isian C-Test di atas:
+                        </p>
+                    </div>
+
+                    <div id="ctest-explanation-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ----------------------------------------------------
+        // DATA: Quiz Questions & Indonesian Explanations
+        // ----------------------------------------------------
+        const quizData = [
+            {
+                id: 1,
+                category: "Wortschatz",
+                question: "Viele Menschen möchten umweltbewusster leben. Deshalb versuchen sie, ihren Plastikverbrauch zu ______.",
+                options: [
+                    { key: "A", text: "vermeiden" },
+                    { key: "B", text: "verbessern" },
+                    { key: "C", text: "erleben" },
+                    { key: "D", text: "übernehmen" }
+                ],
+                answer: "A",
+                explanation: "<b>vermeiden</b> berarti <i>mencegah / menghindari</i>. Kalimat membicarakan usaha menghindari penggunaan plastik berlebih demi lingkungan. (<i>verbessern</i> = memperbaiki, <i>erleben</i> = mengalami, <i>übernehmen</i> = mengambil alih)."
+            },
+            {
+                id: 2,
+                category: "Wortschatz",
+                question: "Welche Bedeutung hat „Veränderung“?",
+                options: [
+                    { key: "A", text: "Veränderung = Entscheidung" },
+                    { key: "B", text: "Veränderung = Änderung" },
+                    { key: "C", text: "Veränderung = Erfahrung" },
+                    { key: "D", text: "Veränderung = Möglichkeit" }
+                ],
+                answer: "B",
+                explanation: "<b>Veränderung</b> dan <b>Änderung</b> keduanya berarti <i>perubahan</i>. (<i>Entscheidung</i> = keputusan, <i>Erfahrung</i> = pengalaman, <i>Möglichkeit</i> = kemungkinan/kesempatan)."
+            },
+            {
+                id: 3,
+                category: "Wortschatz",
+                question: "Welche Form passt?<br><blockquote class='italic border-l-4 border-blue-400 pl-3 my-2 text-slate-700 font-normal'>„Die Stadt möchte das ______ der Bürger für Umweltthemen erhöhen.“</blockquote>",
+                options: [
+                    { key: "A", text: "bewusst" },
+                    { key: "B", text: "Bewusstsein" },
+                    { key: "C", text: "bewusste" },
+                    { key: "D", text: "bewusst machen" }
+                ],
+                answer: "B",
+                explanation: "Setelah artikel kata benda neutral <b>das</b>, dibutuhkan Kata Benda (Nomen). <b>das Bewusstsein</b> berarti <i>kesadaran</i>. 'Kota ingin meningkatkan kesadaran warga terhadap isu lingkungan.'"
+            },
+            {
+                id: 4,
+                category: "Wortschatz",
+                question: "Was ist ein Synonym für „Möglichkeit“?",
+                options: [
+                    { key: "A", text: "Ursache" },
+                    { key: "B", text: "Chance" },
+                    { key: "C", text: "Meinung" },
+                    { key: "D", text: "Aufgabe" }
+                ],
+                answer: "B",
+                explanation: "<b>Möglichkeit</b> berarti <i>kesempatan / peluang</i>, yang mana sinonim tepatnya adalah <b>Chance</b>. (<i>Ursache</i> = penyebab, <i>Meinung</i> = pendapat, <i>Aufgabe</i> = tugas)."
+            },
+            {
+                id: 5,
+                category: "Wortschatz",
+                question: "Welche Kombination ist richtig?",
+                options: [
+                    { key: "A", text: "eine Entscheidung treffen" },
+                    { key: "B", text: "eine Entscheidung sammeln" },
+                    { key: "C", text: "eine Entscheidung kennenlernen" },
+                    { key: "D", text: "eine Entscheidung recyceln" }
+                ],
+                answer: "A",
+                explanation: "Pasangan ungkapan kata kerja tetap (Nomen-Verb-Verbindung) yang benar adalah <b>eine Entscheidung treffen</b> yang berarti <i>mengambil keputusan</i>."
+            },
+            {
+                id: 6,
+                category: "Wortschatz",
+                question: "Was bedeutet „etwas bewirken“?",
+                options: [
+                    { key: "A", text: "etwas vergessen" },
+                    { key: "B", text: "etwas verändern oder einen Effekt verursachen" },
+                    { key: "C", text: "etwas vermeiden" },
+                    { key: "D", text: "etwas erklären" }
+                ],
+                answer: "B",
+                explanation: "<b>etwas bewirken</b> berarti <i>membuat perubahan / menimbulkan suatu dampak/efek</i>."
+            },
+            {
+                id: 7,
+                category: "Wortschatz",
+                question: "Welche Form passt?<br><blockquote class='italic border-l-4 border-blue-400 pl-3 my-2 text-slate-700 font-normal'>„Die Studenten zeigten großes ______ für das soziale Projekt.“</blockquote>",
+                options: [
+                    { key: "A", text: "engagiert" },
+                    { key: "B", text: "Engagement" },
+                    { key: "C", text: "engagieren" },
+                    { key: "D", text: "engagierte" }
+                ],
+                answer: "B",
+                explanation: "Setelah kata sifat <b>großes</b>, dibutuhkan Kata Benda netral tanpa artikel (<i>das Engagement</i> = komitmen/keterlibatan). 'Para mahasiswa menunjukkan komitmen besar untuk proyek sosial tersebut.'"
+            },
+            {
+                id: 8,
+                category: "Wortschatz",
+                question: "Was ist das passende Synonym für „anstrengend“?",
+                options: [
+                    { key: "A", text: "ermüdend" },
+                    { key: "B", text: "nachhaltig" },
+                    { key: "C", text: "beeindruckt" },
+                    { key: "D", text: "ordentlich" }
+                ],
+                answer: "A",
+                explanation: "<b>anstrengend</b> berarti <i>melelahkan / menguras tenaga</i>, yang mana berpadanan dengan kata <b>ermüdend</b> (melelahkan). (<i>nachhaltig</i> = berkelanjutan, <i>beeindruckt</i> = terkesan, <i>ordentlich</i> = rapi)."
+            },
+            {
+                id: 9,
+                category: "Grammatik",
+                question: "Nach der Veranstaltung sprach die Organisatorin mit ______ Teilnehmern über das Projekt.",
+                options: [
+                    { key: "A", text: "einige" },
+                    { key: "B", text: "einigen" },
+                    { key: "C", text: "einiger" },
+                    { key: "D", text: "einiges" }
+                ],
+                answer: "B",
+                explanation: "Kata depan <b>mit</b> selalu menghendaki Kasus <b>Dativ</b>. Dalam bentuk jamak Dativ (Plural Dativ), kata penunjuk mendapatkan akhiran <b>-en</b> (<i>mit einigen Teilnehmern</i>)."
+            },
+            {
+                id: 10,
+                category: "Grammatik",
+                question: "Wir besuchen morgen ______ neuen Stadtteil.",
+                options: [
+                    { key: "A", text: "ein" },
+                    { key: "B", text: "einen" },
+                    { key: "C", text: "einem" },
+                    { key: "D", text: "einer" }
+                ],
+                answer: "B",
+                explanation: "Kata kerja <b>besuchen</b> membutuhkan Objek Penderita (<b>Akkusativ</b>). Kata benda <i>der Stadtteil</i> adalah Maskulin, sehingga artikel tak tentu Akkusativ maskulin adalah <b>einen</b>."
+            },
+            {
+                id: 11,
+                category: "Grammatik",
+                question: "Das ist ein sehr ______ Projekt.",
+                options: [
+                    { key: "A", text: "interessant" },
+                    { key: "B", text: "interessante" },
+                    { key: "C", text: "interessanter" },
+                    { key: "D", text: "interessantes" }
+                ],
+                answer: "D",
+                explanation: "Deklinasi kata sifat setelah artikel tak tentu <i>ein</i> untuk kata benda netral Nominativ (<i>das Projekt</i>) membutuhkan akhiran <b>-es</b> (<i>ein interessantes Projekt</i>)."
+            },
+            {
+                id: 12,
+                category: "Grammatik",
+                question: "Ich arbeite gern mit ______ Menschen zusammen.",
+                options: [
+                    { key: "A", text: "engagierte" },
+                    { key: "B", text: "engagierten" },
+                    { key: "C", text: "engagierter" },
+                    { key: "D", text: "engagiert" }
+                ],
+                answer: "B",
+                explanation: "Kata depan <b>mit</b> diikuti kasus Dativ. Untuk Kata Benda Jamak tanpa artikel (Dativ Plural), kata sifat mendapat akhiran <b>-en</b> (<i>mit engagierten Menschen</i>)."
+            },
+            {
+                id: 13,
+                category: "Grammatik",
+                question: "Das ist der Kurs, ______ ich letzte Woche besucht habe.",
+                options: [
+                    { key: "A", text: "der" },
+                    { key: "B", text: "dem" },
+                    { key: "C", text: "den" },
+                    { key: "D", text: "dessen" }
+                ],
+                answer: "C",
+                explanation: "Kata ganti relatif (Relativpronomen) merujuk pada kata benda maskulin <i>der Kurs</i>. Dalam anak kalimat, kursus ini berfungsi sebagai objek Akkusativ dari kata kerja <i>besucht habe</i>, jadi menggunakan <b>den</b>."
+            },
+            {
+                id: 14,
+                category: "Grammatik",
+                question: "Welche Form ist grammatisch richtig?<br><blockquote class='italic border-l-4 border-blue-400 pl-3 my-2 text-slate-700 font-normal'>„Wegen ______ starken Regens wurde die Veranstaltung abgesagt.“</blockquote>",
+                options: [
+                    { key: "A", text: "der" },
+                    { key: "B", text: "des" },
+                    { key: "C", text: "dem" },
+                    { key: "D", text: "den" }
+                ],
+                answer: "B",
+                explanation: "Kata depan <b>wegen</b> menghendaki kasus <b>Genitiv</b>. Kata benda maskulin <i>der Regen</i> dalam Genitiv memakai artikel <b>des</b> (<i>des starken Regens</i>)."
+            },
+            {
+                id: 15,
+                category: "Grammatik",
+                question: "Letzte Woche ______ ich an einem wichtigen Seminar teil.",
+                options: [
+                    { key: "A", text: "nehme" },
+                    { key: "B", text: "nahm" },
+                    { key: "C", text: "genommen" },
+                    { key: "D", text: "nehmen" }
+                ],
+                answer: "B",
+                explanation: "Penanda waktu <i>Letzte Woche</i> menunjukkan kejadian lampau (Präteritum). Bentuk Präteritum kata kerja terpisah <i>teilnehmen</i> untuk subjek <i>ich</i> adalah <b>nahm ... teil</b>."
+            },
+            {
+                id: 16,
+                category: "Grammatik",
+                question: "Er erklärte mir, wie man das Problem schnell ______.",
+                options: [
+                    { key: "A", text: "lösen kann" },
+                    { key: "B", text: "kann lösen" },
+                    { key: "C", text: "gelöst kann" },
+                    { key: "D", text: "lösen konnte" }
+                ],
+                answer: "A",
+                explanation: "Dalam anak kalimat yang diawali kata tanya (<i>Nebensatz mit W-Frage 'wie'</i>), kata kerja berkonjugasi (Modalverb <i>kann</i>) diletakkan di paling akhir kalimat (<i>lösen kann</i>)."
+            },
+            {
+                id: 17,
+                category: "Grammatik",
+                question: "Obwohl die Aufgabe schwierig ______, konnte ich sie rechtzeitig erledigen.",
+                options: [
+                    { key: "A", text: "ist" },
+                    { key: "B", text: "war" },
+                    { key: "C", text: "gewesen" },
+                    { key: "D", text: "wäre" }
+                ],
+                answer: "B",
+                explanation: "Induk kalimat menggunakan kata kerja bentuk lampau (<i>konnte</i>), sehingga anak kalimat yang diawali kata sambung <i>obwohl</i> juga menggunakan bentuk lampau Präteritum (<b>war</b>)."
+            },
+            {
+                id: 18,
+                category: "Grammatik",
+                question: "Ich weiß nicht, ______ er heute nicht zur Arbeit gekommen ist.",
+                options: [
+                    { key: "A", text: "dass" },
+                    { key: "B", text: "obwohl" },
+                    { key: "C", text: "warum" },
+                    { key: "D", text: "trotzdem" }
+                ],
+                answer: "C",
+                explanation: "Untuk menyatakan pertanyaan terselubung mengenai alasan ('mengapa'), kata sambung yang tepat adalah <b>warum</b>."
+            },
+            {
+                id: 19,
+                category: "B1+ → B2",
+                question: "Die Organisation möchte ein Programm entwickeln, ______ junge Menschen bei der Jobsuche unterstützt.",
+                options: [
+                    { key: "A", text: "das" },
+                    { key: "B", text: "der" },
+                    { key: "C", text: "dem" },
+                    { key: "D", text: "deren" }
+                ],
+                answer: "A",
+                explanation: "Kata ganti relatif merujuk pada kata benda netral <i>ein Programm</i> (das Programm) yang bertindak sebagai subjek (Nominativ) dalam anak kalimat -> <b>das</b>."
+            },
+            {
+                id: 20,
+                category: "B1+ → B2",
+                question: "Die Stadt hat mehrere Maßnahmen ______, um den Verkehr zu reduzieren.",
+                options: [
+                    { key: "A", text: "ergriffen" },
+                    { key: "B", text: "genommen" },
+                    { key: "C", text: "gemacht" },
+                    { key: "D", text: "getan" }
+                ],
+                answer: "A",
+                explanation: "Pasangan ungkapan kata kerja tetap (Nomen-Verb-Verbindung) yang tepat adalah <b>Maßnahmen ergreifen</b> (<i>mengambil langkah-langkah/tindakan</i>). Bentuk Partizip II dari <i>ergreifen</i> adalah <b>ergriffen</b>."
+            }
+        ];
+
+        // ----------------------------------------------------
+        // DATA: C-Test Missing Letters & Explanations
+        // ----------------------------------------------------
+        const ctestGapsData = [
+            { id: 1, prefix: "Umwelt", answer: "projekt", accept: ["projekt", "aktion"], length: 7, full: "Umweltprojekt", indonesian: "<b>Umweltprojekt</b> (Proyek Lingkungan): Kata benda majemuk dari <i>Umwelt</i> + <i>Projekt</i>. Merujuk pada topik/judul teks." },
+            { id: 2, prefix: "wu", answer: "rde", accept: ["rde"], length: 3, full: "wurde", indonesian: "<b>wurde</b> (Bentuk lampau Passiv Präteritum untuk <i>die Aktion</i>): 'Aksi tersebut diorganisir oleh...'" },
+            { id: 3, prefix: "saub", answer: "eren", accept: ["eren"], length: 4, full: "sauberen", indonesian: "<b>sauberen</b> (Kata sifat <i>sauber</i> Dativ maskulin setelah preposisi <i>für einen</i>): '...untuk wilayah kota yang bersih...'" },
+            { id: 4, prefix: "nachha", answer: "ltigen", accept: ["ltigen"], length: 6, full: "nachhaltigen", indonesian: "<b>nachhaltigen</b> (Kata sifat <i>nachhaltig</i> = berkelanjutan). Sesuai dengan deklinasi Dativ maskulin." },
+            { id: 5, prefix: "Gemeind", answer: "ezentrum", accept: ["ezentrum", "ehaus"], length: 8, full: "Gemeindezentrum", indonesian: "<b>Gemeindezentrum</b> (Pusat Kegiatan Warga/Komunitas): Kata benda netral <i>das Gemeindezentrum</i>." },
+            { id: 6, prefix: "Inform", answer: "ationen", accept: ["ationen"], length: 7, full: "Informationen", indonesian: "<b>Informationen</b> (Bentuk jamak dari <i>die Information</i> = informasi-informasi)." },
+            { id: 7, prefix: "kümm", answer: "erte", accept: ["erte"], length: 4, full: "kümmerte", indonesian: "<b>kümmerte</b> (Kata kerja refleksif Präteritum <i>sich kümmern um</i> = mengurus/merawat)." },
+            { id: 8, prefix: "heru", answer: "mlag", accept: ["mlag", "mflog"], length: 4, full: "herumlag", indonesian: "<b>herumlag</b> (Präteritum dari <i>herumliegen</i> = berserakan di sekitar tempat tersebut)." },
+            { id: 9, prefix: "Abf", answer: "älle", accept: ["älle", "alle"], length: 4, full: "Abfälle", indonesian: "<b>Abfälle</b> (Kata benda jamak <i>der Abfall</i> -> <i>die Abfälle</i> = sampah/limbah)." },
+            { id: 10, prefix: "tre", answer: "nnt", accept: ["nnt"], length: 3, full: "trennt", indonesian: "<b>trennt</b> (Kata kerja <i>müll trennen</i> = memilah sampah sesuai jenisnya)." },
+            { id: 11, prefix: "recy", answer: "celn", accept: ["celn"], length: 4, full: "recyceln", indonesian: "<b>recyceln</b> (Kata kerja = mendaur ulang)." },
+            { id: 12, prefix: "wis", answer: "sen", accept: ["sen"], length: 3, full: "wissen", indonesian: "<b>wissen</b> (Kata kerja Infinitif setelah modal <i>nicht wissen, wie...</i> = tidak mengetahui)." },
+            { id: 13, prefix: "Besu", answer: "chern", accept: ["chern"], length: 5, full: "Besuchern", indonesian: "<b>Besuchern</b> (Dativ Plural dari kata benda <i>der Besucher</i> = pengunjung)." },
+            { id: 14, prefix: "anstr", answer: "engend", accept: ["engend"], length: 6, full: "anstrengend", indonesian: "<b>anstrengend</b> (Kata sifat = melelahkan/berat)." },
+            { id: 15, prefix: "saub", answer: "erer", accept: ["erer"], length: 4, full: "sauberer", indonesian: "<b>sauberer</b> (Bentuk perbandingan Komparatif dari <i>sauber</i> = jauh lebih bersih)." },
+            { id: 16, prefix: "Veränd", answer: "erungen", accept: ["erungen"], length: 7, full: "Veränderungen", indonesian: "<b>Veränderungen</b> (Bentuk jamak kata benda <i>die Veränderung</i> = perubahan-perubahan)." },
+            { id: 17, prefix: "Mögli", answer: "chkeit", accept: ["chkeit"], length: 6, full: "Möglichkeit", indonesian: "<b>Möglichkeit</b> (Kata benda feminin <i>die Möglichkeit</i> = kesempatan/peluang)." },
+            { id: 18, prefix: "Sinnv", answer: "olles", accept: ["olles"], length: 5, full: "Sinnvolles", indonesian: "<b>Sinnvolles</b> (Kata sifat yang dibendakan setelah kata <i>etwas</i> = sesuatu yang bermanfaat)." }
+        ];
+
+        // Track user answers state
+        let userQuizAnswers = {};
+
+        // ----------------------------------------------------
+        // RENDER: Quiz Questions
+        // ----------------------------------------------------
+        function renderQuiz() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const qNum = index + 1;
+                const card = document.createElement('div');
+                card.className = "p-5 md:p-6 bg-slate-50 border border-slate-200 rounded-2xl transition duration-200 shadow-sm hover:border-slate-300";
+                card.id = `q-card-${item.id}`;
+
+                let optionsHtml = '';
+                item.options.forEach(opt => {
+                    optionsHtml += `
+                        <label id="label-${item.id}-${opt.key}" class="option-label flex items-center p-3.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/40 text-sm md:text-base font-medium text-slate-700">
+                            <input type="radio" name="q-${item.id}" value="${opt.key}" onchange="handleOptionSelect(${item.id}, '${opt.key}')" class="w-4 h-4 text-blue-600 focus:ring-blue-500 mr-3">
+                            <span class="font-bold mr-2 text-slate-400 opacity-75">${opt.key}.</span>
+                            <span>${opt.text}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-200 text-slate-700">
+                            Soal ${qNum} / 20 (${item.category})
+                        </span>
+                        <span id="q-status-${item.id}" class="text-xs font-bold hidden"></span>
+                    </div>
+                    <div class="text-base md:text-lg font-semibold text-slate-900 mb-4">
+                        ${item.question}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        ${optionsHtml}
+                    </div>
+                    
+                    <!-- Instant Indonesian Explanation Box -->
+                    <div id="expl-${item.id}" class="hidden mt-4 p-4 rounded-xl bg-slate-100 border border-slate-300 text-sm leading-relaxed text-slate-800 transition">
+                        <div id="expl-header-${item.id}" class="font-bold text-slate-900 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-blue-600"></i>
+                            <span>Penjelasan Bahasa Indonesia:</span>
+                        </div>
+                        <div>${item.explanation}</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // ----------------------------------------------------
+        // LOGIC: Instant Option Click Feedback
+        // ----------------------------------------------------
+        function handleOptionSelect(questionId, selectedKey) {
+            const q = quizData.find(item => item.id === questionId);
+            if (!q) return;
+
+            userQuizAnswers[questionId] = selectedKey;
+
+            const expl = document.getElementById(`expl-${questionId}`);
+            const statusSpan = document.getElementById(`q-status-${questionId}`);
+            const explHeader = document.getElementById(`expl-header-${questionId}`);
+
+            // Reset labels styles for this question
+            q.options.forEach(opt => {
+                const label = document.getElementById(`label-${questionId}-${opt.key}`);
+                label.classList.remove('correct-bg', 'incorrect-bg');
+            });
+
+            const correctLabel = document.getElementById(`label-${questionId}-${q.answer}`);
+            const selectedLabel = document.getElementById(`label-${questionId}-${selectedKey}`);
+
+            if (selectedKey === q.answer) {
+                // Correct choice
+                selectedLabel.classList.add('correct-bg');
+                statusSpan.className = "text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-md flex items-center gap-1";
+                statusSpan.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Benar!`;
+                statusSpan.classList.remove('hidden');
+
+                explHeader.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i> <span class="text-emerald-900">Benar! Penjelasan Bahasa Indonesia:</span>`;
+            } else {
+                // Incorrect choice
+                selectedLabel.classList.add('incorrect-bg');
+                correctLabel.classList.add('correct-bg');
+                statusSpan.className = "text-xs font-bold text-red-700 bg-red-100 border border-red-300 px-2.5 py-1 rounded-md flex items-center gap-1";
+                statusSpan.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600"></i> Salah (Tepat: ${q.answer})`;
+                statusSpan.classList.remove('hidden');
+
+                explHeader.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600 text-base"></i> <span class="text-red-900">Salah. Jawaban Tepat: ${q.answer} - Penjelasan:</span>`;
+            }
+
+            // Immediately show explanation box
+            expl.classList.remove('hidden');
+
+            // Update live quiz total score
+            updateQuizLiveScore();
+        }
+
+        function updateQuizLiveScore() {
+            let correctTotal = 0;
+            quizData.forEach(q => {
+                if (userQuizAnswers[q.id] === q.answer) {
+                    correctTotal++;
+                }
+            });
+
+            document.getElementById('quiz-score-text').innerText = `Skor Quiz: ${correctTotal} / 20`;
+            document.getElementById('header-quiz-score').innerText = `${correctTotal}/20`;
+        }
+
+        function checkAllQuizAnswers() {
+            quizData.forEach(q => {
+                const selected = document.querySelector(`input[name="q-${q.id}"]:checked`);
+                if (selected) {
+                    handleOptionSelect(q.id, selected.value);
+                } else {
+                    // Show missing notice for unanswered
+                    const expl = document.getElementById(`expl-${q.id}`);
+                    const statusSpan = document.getElementById(`q-status-${q.id}`);
+                    const correctLabel = document.getElementById(`label-${q.id}-${q.answer}`);
+                    
+                    correctLabel.classList.add('correct-bg');
+                    statusSpan.className = "text-xs font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-md flex items-center gap-1";
+                    statusSpan.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Belum Dijawab (Jawaban: ${q.answer})`;
+                    statusSpan.classList.remove('hidden');
+                    expl.classList.remove('hidden');
+                }
+            });
+            updateQuizLiveScore();
+        }
+
+        // ----------------------------------------------------
+        // RENDER: C-Test Paragraph
+        // ----------------------------------------------------
+        function renderCTest() {
+            const paragraphContainer = document.getElementById('ctest-paragraph');
+
+            paragraphContainer.innerHTML = `
+                Letzten Samstag nahm ich zum ersten Mal an einem 
+                <span class="font-bold text-slate-900">Umwelt</span><input type="text" id="ctest-1" data-gap="1" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="______" title="Isi potongan kata (7 huruf)"> 
+                in meiner Stadt teil. Die Aktion 
+                <span class="font-bold text-slate-900">wu</span><input type="text" id="ctest-2" data-gap="2" class="ctest-input px-1 py-0.5 text-center w-14" placeholder="___" title="Isi potongan kata (3 huruf)"> 
+                von einer kleinen Gruppe organisiert, die sich für einen 
+                <span class="font-bold text-slate-900">saub</span><input type="text" id="ctest-3" data-gap="3" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)"> 
+                und 
+                <span class="font-bold text-slate-900">nachha</span><input type="text" id="ctest-4" data-gap="4" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="______" title="Isi potongan kata (6 huruf)"> 
+                Stadtteil einsetzt. Am Morgen trafen wir uns vor einem 
+                <span class="font-bold text-slate-900">Gemeind</span><input type="text" id="ctest-5" data-gap="5" class="ctest-input px-1 py-0.5 text-center w-24" placeholder="________" title="Isi potongan kata (8 huruf)"> 
+                und bekamen dort einige wichtige 
+                <span class="font-bold text-slate-900">Inform</span><input type="text" id="ctest-6" data-gap="6" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="_______" title="Isi potongan kata (7 huruf)">. 
+                Danach teilten wir uns in kleine Gruppen auf. Meine Gruppe 
+                <span class="font-bold text-slate-900">kümm</span><input type="text" id="ctest-7" data-gap="7" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)"> 
+                sich um einen Park, in dem viel Müll 
+                <span class="font-bold text-slate-900">heru</span><input type="text" id="ctest-8" data-gap="8" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)">. 
+                Zuerst sammelten wir Plastikflaschen, Papier und andere 
+                <span class="font-bold text-slate-900">Abf</span><input type="text" id="ctest-9" data-gap="9" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)"> 
+                ein. Anschließend erklärte uns eine Mitarbeiterin, wie man die verschiedenen Materialien richtig 
+                <span class="font-bold text-slate-900">tre</span><input type="text" id="ctest-10" data-gap="10" class="ctest-input px-1 py-0.5 text-center w-14" placeholder="___" title="Isi potongan kata (3 huruf)"> 
+                und 
+                <span class="font-bold text-slate-900">recy</span><input type="text" id="ctest-11" data-gap="11" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)"> 
+                kann. Besonders interessant fand ich, dass viele Menschen zwar umweltbewusst leben möchten, aber oft nicht 
+                <span class="font-bold text-slate-900">wis</span><input type="text" id="ctest-12" data-gap="12" class="ctest-input px-1 py-0.5 text-center w-14" placeholder="___" title="Isi potongan kata (3 huruf)">, 
+                wie sie im Alltag damit anfangen sollen. Deshalb sprachen wir auch mit einigen 
+                <span class="font-bold text-slate-900">Besu</span><input type="text" id="ctest-13" data-gap="13" class="ctest-input px-1 py-0.5 text-center w-18" placeholder="_____" title="Isi potongan kata (5 huruf)"> 
+                des Parks und gaben ihnen einfache Tipps. Obwohl die Arbeit manchmal 
+                <span class="font-bold text-slate-900">anstr</span><input type="text" id="ctest-14" data-gap="14" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="______" title="Isi potongan kata (6 huruf)"> 
+                war, machte sie mir viel Spaß. Am Ende des Tages war der Park deutlich 
+                <span class="font-bold text-slate-900">saub</span><input type="text" id="ctest-15" data-gap="15" class="ctest-input px-1 py-0.5 text-center w-16" placeholder="____" title="Isi potongan kata (4 huruf)">, 
+                und wir konnten sehen, dass selbst kleine 
+                <span class="font-bold text-slate-900">Veränd</span><input type="text" id="ctest-16" data-gap="16" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="_______" title="Isi potongan kata (7 huruf)"> 
+                einen Unterschied machen können. Für mich war diese Erfahrung nicht nur nützlich, sondern auch eine gute 
+                <span class="font-bold text-slate-900">Mögli</span><input type="text" id="ctest-17" data-gap="17" class="ctest-input px-1 py-0.5 text-center w-20" placeholder="______" title="Isi potongan kata (6 huruf)">, 
+                neue Menschen kennenzulernen und gemeinsam etwas 
+                <span class="font-bold text-slate-900">Sinnv</span><input type="text" id="ctest-18" data-gap="18" class="ctest-input px-1 py-0.5 text-center w-18" placeholder="_____" title="Isi potongan kata (5 huruf)"> 
+                zu tun.
+            `;
+        }
+
+        // ----------------------------------------------------
+        // LOGIC: Check C-Test Answers
+        // ----------------------------------------------------
+        function checkCTestAnswers() {
+            let correctCount = 0;
+
+            ctestGapsData.forEach(gap => {
+                const inputEl = document.getElementById(`ctest-${gap.id}`);
+                const userVal = inputEl.value.trim().toLowerCase();
+
+                inputEl.classList.remove('correct', 'incorrect');
+
+                const isCorrect = gap.accept.some(acc => acc.toLowerCase() === userVal);
+
+                if (isCorrect && userVal !== "") {
+                    correctCount++;
+                    inputEl.classList.add('correct');
+                    inputEl.title = `Benar! Complete word: ${gap.full}`;
+                } else {
+                    inputEl.classList.add('incorrect');
+                    inputEl.title = `Jawaban tepat: ${gap.answer} (Lengkap: ${gap.full})`;
+                }
+            });
+
+            // Update C-Test Score Badge
+            document.getElementById('ctest-score-text').innerText = `Skor C-Test: ${correctCount} / 18`;
+            document.getElementById('header-ctest-score').innerText = `${correctCount}/18`;
+
+            // Render C-Test Explanations list
+            renderCTestExplanations();
+            document.getElementById('ctest-explanations').classList.remove('hidden');
+
+            // Scroll gently to explanation section
+            document.getElementById('ctest-explanations').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderCTestExplanations() {
+            const listContainer = document.getElementById('ctest-explanation-list');
+            listContainer.innerHTML = '';
+
+            ctestGapsData.forEach(gap => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs md:text-sm leading-relaxed shadow-sm";
+                itemDiv.innerHTML = `
+                    <div class="flex items-center justify-between font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1.5">
+                        <span>Gap ${gap.id}: <span class="text-indigo-600 font-extrabold">${gap.prefix}<u>${gap.answer}</u></span></span>
+                        <span class="text-slate-500 font-medium">Kata Lengkap: ${gap.full}</span>
+                    </div>
+                    <div class="text-slate-700 mt-2">${gap.indonesian}</div>
+                `;
+                listContainer.appendChild(itemDiv);
+            });
+        }
+
+        // ----------------------------------------------------
+        // EXPORT: Download Questions & Answers as TXT
+        // ----------------------------------------------------
+        function downloadQuestionsTxt() {
+            let content = `=======================================================\n`;
+            content += `🇩🇪 QUIZ WORTSCHATZ, GRAMMATIK B1-B2 & C-TEST\n`;
+            content += `=======================================================\n\n`;
+
+            content += `--- BAGIAN 1: SOAL WORTSCHATZ & GRAMMATIK (20 SOAL) ---\n\n`;
+
+            quizData.forEach((q, idx) => {
+                content += `${idx + 1}. [${q.category}] ${q.question.replace(/<[^>]*>?/gm, '')}\n`;
+                q.options.forEach(opt => {
+                    content += `   ${opt.key}. ${opt.text}\n`;
+                });
+                content += `   [KUNCI JAWABAN]: ${q.answer}\n`;
+                content += `   [PENJELASAN INDONESIA]: ${q.explanation.replace(/<[^>]*>?/gm, '')}\n\n`;
+            });
+
+            content += `\n--- BAGIAN 2: C-TEST (UMWELTPROJEKT) ---\n\n`;
+            content += `Teks Lengkap & Potongan C-Test:\n`;
+            content += `Letzten Samstag nahm ich zum ersten Mal an einem Umwelt[1:projekt] in meiner Stadt teil. `;
+            content += `Die Aktion wu[2:rde] von einer kleinen Gruppe organisiert, die sich für einen saub[3:eren] und nachha[4:ltigen] Stadtteil einsetzt. `;
+            content += `Am Morgen trafen wir uns vor einem Gemeind[5:ezentrum] und bekamen dort einige wichtige Inform[6:ationen]. `;
+            content += `Danach teilten wir uns in kleine Gruppen auf. Meine Gruppe kümm[7:erte] sich um einen Park, in dem viel Müll heru[8:mlag]. `;
+            content += `Zuerst sammelten wir Plastikflaschen, Papier und andere Abf[9:älle] ein. `;
+            content += `Anschließend erklärte uns eine Mitarbeiterin, wie man die verschiedenen Materialien richtig tre[10:nnt] und recy[11:celn] kann. `;
+            content += `Besonders interessant fand ich, dass viele Menschen zwar umweltbewusst leben möchten, aber oft nicht wis[12:sen], wie sie im Alltag damit anfangen sollen. `;
+            content += `Deshalb sprachen wir auch mit einigen Besu[13:chern] des Parks und gaben ihnen einfache Tipps. `;
+            content += `Obwohl die Arbeit manchmal anstr[14:engend] war, machte sie mir viel Spaß. `;
+            content += `Am Ende des Tages war der Park deutlich saub[15:erer], und wir konnten sehen, dass selbst kleine Veränd[16:erungen] einen Unterschied machen können. `;
+            content += `Für mich war diese Erfahrung nicht nur nützlich, sondern auch eine gute Mögli[17:chkeit], neue Menschen kennenzulernen und gemeinsam etwas Sinnv[18:olles] zu tun.\n\n`;
+
+            content += `KUNCI JAWABAN & PENJELASAN C-TEST (BAHASA INDONESIA):\n`;
+            ctestGapsData.forEach(gap => {
+                content += `${gap.id}. Potongan: "${gap.prefix}${gap.answer}" (Kata Lengkap: ${gap.full})\n   Penjelasan: ${gap.indonesian.replace(/<[^>]*>?/gm, '')}\n\n`;
+            });
+
+            // Create download trigger using Blob
+            const element = document.createElement('a');
+            const file = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            element.href = URL.createObjectURL(file);
+            element.download = "Soal_Quiz_Grammatik_Wortschatz_CTest_B1_B2.txt";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // ----------------------------------------------------
+        // INITIALIZATION
+        // ----------------------------------------------------
+        window.onload = function() {
+            renderQuiz();
+            renderCTest();
+        };
+    </script>
+</body>
+</html>
